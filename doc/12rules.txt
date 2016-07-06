@@ -1,0 +1,323 @@
+Archive of: https://www.stolaf.edu/people/hansonr/sudoku/12rules.htm
+
+I thought about posting this in the "mathematics of sudoku" forum, but really what it is is
+a statement of the common (and maybe not so common) rules for solving Sudoku, both in plain
+English and in logical notation. If you are just interested in solving Sudoku, ignore the
+funny notation; if you are interested in the mathematics, enjoy the symmetry.
+
+I suggest that the following set of rules may constitute the entire set of
+"standard" methods (not including simple chain-based logic) used to solve Sudoku puzzles.
+
+Included here are:
+
+1. naked singles
+2. hidden singles
+3,4. locked candidates
+5. naked tuples
+6. hidden tuples
+7. grid analysis (X-wings, Swordfish, etc.)
+8-11. generalized rules for larger than standard Sudoku
+12. uniqueness (added 12/4/05)
+
+Not included here are:
+
+chain-based logic (coloring, x-cycles, y-cycles, 3D medusa)
+trial and error (hypothesis and proof, bifurcation)
+
+
+I offer here a simple picture of all basic methods. The picture is one of
+INTERSECTING sets. The principle behind all these methods is simply that if
+a candidate is located only in the intersection area of one of two overlapping
+sets, then it is solely in the intersection area of the other set as well.
+
+The statement is this:
+
+If a candidate k is possible in area A^B (A intersect B)
+and not elsewhere in A, then k can be eliminated from
+any other position in B as well.
+
+
+ ---------------
+| A             |
+|               |
+|               |
+|        ---------------
+|       |     k |       |
+|       | A^B   |     k |
+|       |      k|   k   |
+ ---------------        |
+        |          k    |
+        |    k          |
+        |         k   B |
+         ---------------
+
+implies
+
+ ---------------
+| A             |
+|               |
+|               |
+|        ---------------
+|       |     k |       |
+|       | A^B   |       |
+|       |      k|       |
+ ---------------        |
+        |               |
+        |               |
+        |             B |
+         ---------------
+
+
+Methods involving more than one candidate simply
+require more than one A and/or more than one B.
+
+
+Code:
+
+method        A          B         candidate
+
+singles      row        col            k
+             col        row            k
+             block      cell           k
+
+locked       block      row            k
+candidates   block      col            k
+
+tuples       row        (col)n        (k)n
+             col        (row)n        (k)n
+             block      (cell)n       (k)n
+
+X-wing       (row)2     (col)2         k
+swordfish    (row)3     (col)3         k
+n-grid       (row)n     (col)n         k
+
+--------- 4x4 Sudoku or larger ---------
+
+n-locked     (block)n   (row)n         k
+candidates   (block)n   (col)n         k
+
+something    (block)n   (row)n        (k)n
+ new         (block)n   (col)n        (k)n
+
+
+OK, here are the rules. Ignore the math if you just want to read the rule.
+
+Key:
+
+r    a row
+c    a column
+b    a block
+k    a candidate
+X_n  a set of n of one of the above (X being r, c, b, or k)
+!X   not that row, column, block, or candidate
+()   is possible
+!()  is not possible
+^/v  and/or
+
+Thus, for example:
+
+r ^ c         an intersection of a row and a column (i.e., a cell)
+r ^ !c        the other cells in that row
+b ^ (r ^ c)   a certain cell in a given block
+b ^ !(r ^ c)  the other cells in that block
+(r ^ c ^ k)   a candidate k is possible in a certain cell
+(r ^ c ^ !k)  candidates other than k are possible in a certain cell
+!(r ^ c ^ !k) candidates other than k are not possible in a certain cell
+
+
+Here we go:
+
+1. naked singles:
+
+1r. (r ^ c ^ k) ^ !(r ^ c ^ !k) --> !(r ^ !c ^ k)
+1c. (r ^ c ^ k) ^ !(r ^ c ^ !k) --> !(!r ^ c ^ k)
+1b. (b ^ (r ^ c) ^ k) ^ !(b ^ (r ^ c) ^ !k) --> !(b ^ !(r ^ c) ^ k)
+
+(1r) says, "If a candidate k is possible in a certain intersection of
+row and column (i.e., a cell), and no other candidates are possible
+in that cell, then k is not possible elsewhere in that row."
+
+(1c) says the same for "that column." (1b) says the same for "that block."
+
+
+2. hidden singles:
+
+2r. (r ^ c ^ k) ^ !(r ^ !c ^ k) --> !(r ^ c ^ !k)
+2c. (r ^ c ^ k) ^ !(!r ^ c ^ k) --> !(r ^ c ^ !k)
+2b. (b ^ (r ^ c) ^ k) ^ !(b ^ !(r ^ c) ^ k) --> !(b ^ (r ^ c) ^ !k)
+
+(2r) says, "If a candidate k is possible in a certain intersection of
+row and column (i.e., a cell) but is not possible elsewhere in that
+row, then no other candidates are possible in the that cell."
+
+(2c) says the same for "elsewhere in that column."
+(2b) says the same for "elsewhere in that block."
+
+
+Replacing either the r or the c with b gives us locked candidate rules:
+
+3. locked candidates, type 1:
+
+3r. (r ^ b ^ k) ^ !(r ^ !b ^ k) --> !(!r ^ b ^ k)
+3c. (c ^ b ^ k) ^ !(c ^ !b ^ k) --> !(!c ^ b ^ k)
+
+(3r) says, "If a candidate k is possible in a certain intersection of
+row and block but is not possible elsewhere in that row, then it is
+also not possible elsewhere in that block."
+
+(3c) says the same for columns.
+
+
+4. locked candidates, type 2:
+
+4r. (r ^ b ^ k) ^ !(!r ^ b ^ k) --> !(r ^ !b ^ k)
+4c. (c ^ b ^ k) ^ !(!c ^ b ^ k) --> !(c ^ !b ^ k)
+
+(4r) says, "If a candidate k is possible in a certain intersection of
+row and block but is not possible elsewhere in that block,
+then it is also not possible elsewhere in that row."
+
+(4c) says the same, but for columns.
+
+
+This basic logic generalizes to ALL of the standard types of analysis.
+Here X_n means a "exactly n of X", where X=r is row, X=c is column,
+and X=k is candidate.
+
+
+5. naked tuples (includes Rules 1r, 1c, and 1b):
+
+5r. (r ^ c_n ^ k_n) ^ !(r ^ c_n ^ !k_n) --> !(r ^ !c_n ^ k_n)
+5c. (c ^ r_n ^ k_n) ^ !(c ^ r_n ^ !k_n) --> !(c ^ !r_n ^ k_n)
+5b. (b ^ (r ^ c)_n ^ k_n) ^ !(b ^ (r ^ c)_n ^ !k_n) --> !(b ^ !(r ^ c)_n ^ k_n)
+
+(5r) says, "If n candidates are possible in a set of n columns of a given row,
+and no other candidates are possible and in those n cells, then those n
+candidates are not possible elsewhere in that row."
+
+(5c) says the same for columns. (3b) says the same for blocks.
+
+6. hidden tuples (includes Rules 2r, 2c, and 2b):
+
+6r. (r ^ c_n ^ k_n) ^ !(r ^ !c_n ^ k_n) --> !(r ^ c_n ^ !k_n)
+6c. (c ^ r_n ^ k_n) ^ !(c ^ !r_n ^ k_n) --> !(c ^ r_n ^ !k_n)
+6b. (b ^ (r ^ c)_n ^ k_n) ^ !(b ^ !(r ^ c)_n ^ k_n) --> !(b ^ (r ^ c)_n ^ !k_n)
+
+(6r) says, "If n candidates are possible in a set of n columns of a given row,
+and those n candidates are not possible elsewhere in that row, then no other
+candidates are possible in those n cells."
+
+(6c) says the same for columns. (6b) says the same for blocks.
+
+
+Note that exchanging k_n and !k_n and exchanging c_n and !c_n in 6r gives an
+alternative statement of 5r:
+
+5r'. (r ^ !c_n ^ !k_n) ^ !(r ^ c_n ^ !k_n) --> !(r ^ !c_n ^ k_n)
+
+This says: "If other than n candidates are possible in other than n cells of a row,
+and those other candidates are not possible in this set of n cells, then this
+set of n candidates is not possible in those other cells. (5r) says the same thing,
+but in a simpler fashion. What this exchanging shows is that naked tuples are the same
+as hidden tuples, just seen from different perspectives.
+
+
+7. grid analysis (X-Wings, Swordfish, etc.)
+
+7r. (r_n ^ c_n ^ k) ^ !(r_n ^ !c_n ^ k) --> !(!r_n ^ c_n ^ k)
+7c. (r_n ^ c_n ^ k) ^ !(!r_n ^ c_n ^ k) --> !(r_n ^ !c_n ^ k)
+
+(7r) says, "If a candidate k is possible in the interesection of n rows and n
+columns but is not possible elsewhere in those n rows, then it is also not
+possible elsewhere in those n columns."
+
+(7c) says the same, but reversing rows and columns.
+
+--------------------------------------------------------------------------------------
+
+If 7 is seen as an n-dimensionalization of 1 and 2, why not have an
+n-dimensionalization of 3 and 4? The answer is that this is unnecessary. To
+state, for example, "(r_n ^ b_n ^ k) ^ !(r_n ^ !b_n ^ k) --> !(!r_n ^ b_n ^ k)"
+is just to state n versions of 3r.
+
+The following rules are not necessary for standard (9x9) Sudoku because
+for these puzzles a block only intersects three rows and three columns.
+In that case, n can meaningfully only be 1 or 2, and (b ^ r_1) = !(b ^ r_2'),
+where r_1 is a row and r_2' is the complementary set of two rows that intersect
+the block. That is, b = (b ^ r_1) v (b ^ r_2'), so both cases have already been
+taken care of. But in larger Sudoku, b != (b ^ r_1) v !(b ^ r_2'), because
+there are more than three rows in a block.
+
+
+8. generalized nxn Sudoku locked candidates, type 1:
+
+8r. (r_n ^ b_n ^ k) ^ !(r_n ^ !b_n ^ k) --> !(!r_n ^ b_n ^ k)
+8c. (c_n ^ b_n ^ k) ^ !(c_n ^ !b_n ^ k) --> !(!c_n ^ b_n ^ k)
+
+(8r) says, "If a candidate k is possible in a certain intersection of
+n rows and n blocks but is not possible elsewhere in those n rows,
+then it is also not possible elsewhere in those n blocks."
+
+(8c) says the same for columns.
+
+
+9. generalized nxn Sudoku locked candidates, type 2:
+
+9r. (r_n ^ b_n ^ k) ^ !(!r_n ^ b_n ^ k) --> !(r_n ^ !b_n ^ k)
+9c. (c_n ^ b_n ^ k) ^ !(!c_n ^ b_n ^ k) --> !(c_n ^ !b_n ^ k)
+
+(9r) says, "If a candidate k is possible in a certain intersection of
+n rows and n blocks but is not possible elsewhere in those n blocks,
+then it is also not possible elsewhere in those n rows."
+
+(9c) says the same, but for columns.
+
+10. generalized naked tuples, type 1:
+
+10r. (r_n ^ b_n ^ k_n) ^ !(r_n ^ !b_n ^ k_n) --> !(!r_n ^ b_n ^ k_n)
+10c. (c_n ^ b_n ^ k_n) ^ !(c_n ^ !b_n ^ k_n) --> !(!c_n ^ b_n ^ k_n)
+
+(10r) says, "If n candidates are possible in the intersection of a set of n blocks
+and a set of n rows, but are not possible elsewhere in those n rows,
+then those n candidates are also not possible elsewhere in those n blocks."
+
+(10c) says the same for columns.
+
+11. generalized naked tuples, type 2:
+
+11r. (r_n ^ b_n ^ k_n) ^ !(!r_n ^ b_n ^ k_n) --> !(r_n ^ !b_n ^ k_n)
+11c. (c_n ^ b_n ^ k_n) ^ !(!c_n ^ b_n ^ k_n) --> !(c_n ^ !b_n ^ k_n)
+
+(11r) says, "If n candidates are possible in the intersection of a set of n blocks
+and a set of n rows, but are not possible elsewhere in those n blocks,
+then those n candidates are also not possible elsewhere in those n rows."
+
+(11c) says the same for columns.
+
+--------------------------------------------------------------------------------------
+
+12. Uniqueness. The uniqueness issue has been introduced at
+http://www.sudoku.com/forums/viewtopic.php?t=890
+Basically (I think) it amounts to having n of everything.
+
+12. (b_n ^ r_n ^ c_n ^ k_n) ^ !(b_n ^ c_n ^ r_n ^ !k_n) --> puzzle is not unique
+
+This says, "If there are n candidates that can only be found in the intersection of n rows,
+n columns, and n blocks, and there are no other candidates in these cells, then this puzzle
+is not unique."
+
+This is because there would then be no way of distinguishing permutations of the puzzle.
+Simple uniqueness tests amount to checking for this potential and heading it off by sometimes
+being able to eliminating k_n from one of the cells. But one must be careful -- it is critical
+that there be n blocks as well as n rows and n columns. If there are 2n blocks, then uniqueness
+isn't an issue. For example, if n=2, so there two rows and two columns, two of the intersection
+cells must be in one block, and two must be in another. If all four cells are in different blocks,
+then there isn't a uniqueness problem.
+_________________
+Bob Hanson
+Professor of Chemistry
+St. Olaf College
+Northfield, MN
+http://www.stolaf.edu/people/hansonr
+
+Last edited by Bob Hanson on Sun Dec 04, 2005 3:49 am; edited 2 times in total
