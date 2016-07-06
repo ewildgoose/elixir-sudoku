@@ -36,7 +36,7 @@ defmodule Sudoku.Mixfile do
 
   defp package do
     [
-     files: ["doc", "lib", "priv", "mix.exs", "README*", "readme*", "LICENSE*", "license*"],
+     files: ["lib", "priv", "mix.exs", "README*", "readme*", "LICENSE*", "license*"],
      maintainers: ["Ed Wildgoose"],
      licenses: ["Apache 2.0"],
      links: %{"GitHub" => "https://github.com/ewildgoose/elixir-sudoku"}
