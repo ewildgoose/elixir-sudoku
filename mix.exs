@@ -5,7 +5,7 @@ defmodule Sudoku.Mixfile do
     [app: :sudoku,
      version: "1.0.0",
      elixir: "~> 1.2",
-     description: "Sudoku solver in Elixir, which prefers to use heuristics over guessing"
+     description: "Sudoku solver in Elixir, which prefers to use heuristics over guessing",
      package: package,
      source_url: "https://github.com/ewildgoose/elixir-sudoku",
      build_embedded: Mix.env == :prod,
