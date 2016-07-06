@@ -29,7 +29,7 @@ point of view they are basically just "fancy guessing"):
 ## Performance
 
 Without the guessing rule, ie only using inferences it can solve:
-* 41665 of 49151 from minimum_sudoku_17.txt (17 clue puzzles)
+* 41,665 of 49,151 from minimum_sudoku_17.txt (17 clue puzzles)
 * 29 of 95 from top95.txt
 
 With guessing it solves all puzzles, with no puzzles taking any significant
@@ -56,8 +56,8 @@ Bob Hanson's page (https://www.stolaf.edu/people/hansonr/sudoku/12rules.htm).
 Why?
 
 This was an exercise in trying to understand "functional programming". To me,
-one part of this means unlearning the habit of writing functions with "side-
-effects". In the context of our solver this means separating the steps of
+one part of this means unlearning the habit of writing functions with
+"side-effects". In the context of our solver this means separating the steps of
 computing what rule to apply next and then applying that rule separately. This
 makes for easier testing and possibly better code re-usability or readability
 
@@ -67,17 +67,17 @@ need to check squares which have changed against your constraints. Intuitively
 this seems a simple algorithm to code, although it does explore your ability
 to express cleanly a depth first search, ie there is a need to (cleanly) abort
 the upper levels of the search due to some finger of the tree reporting a
-contradition.  From a functional point of view this algorithm gets passed some
-state and then computes some new state without returning details of the
-operations used.
+contradition.  The "Norvig algorithm" is efficient in that the modification of
+state is done simultaneously with searching for rules to apply, but it's not
+"functional" in the sense that functional thinking teaches us to separate side
+effects (modification of data) from decisions of what modification to make.
 
 This functional solver is an experiment in maintaining the split between
-idempotent computation of "how should we change the state" from the
-application of that operation. We succeed in maintaining that split right up
-to the top level solver, which basically spins asking for a rule to change the
-state, then applying that rule.  Of course this is less efficient than
-modifying your state whilst searching for a next move, but offers some
-benefits as above.
+computation of "how should we modify state" from the application of that state
+modification operation. We succeed in maintaining that split right up to the
+top level solver, which basically spins asking for a rule to change the state,
+then applying that rule.  Of course this is less efficient than modifying your
+state whilst searching for a next move, but offers some benefits as above.
 
 
 ## Use
@@ -87,7 +87,7 @@ as the unknown, and any other character is a symbol to assign to that location
 
     example:
 
-    iex> {:solved, steps, board} = Sudoku.solve("400010000000309040070005009000060021004070600190050000900400070030608000000030006"); Sudoku.Board.to_string(board, :flat)
+    iex> {:solved, steps, board} = Sudoku.solve("4...1.......3.9.4..7...5..9....6..21..4.7.6..19..5....9..4...7..3.6.8.......3...6"); Sudoku.Board.to_string(board, :flat)
     "459716382612389745873245169387964521524173698196852437965421873731698254248537916"
 
 The Sudoku.Strategy module contains solve/1, find_next_step/1, step_board/1,
