@@ -62,7 +62,7 @@ defmodule Sudoku.Board do
   end
 
   @doc """
-  Apply fixed assignments to a board
+  Apply fixed assignments to a board, from a list/bitstring
   """
   def assign_board(board, initial) when is_list(initial) do
     initial
@@ -70,11 +70,7 @@ defmodule Sudoku.Board do
     |> Enum.reduce(board, &assign_row/2)
   end
 
-  @doc """
-  Apply fixed assignments to a board, from a bitstring
-
-  Accepts any +ve_number/letter as a symbol. 0, ".", "_" and anything else are considered a blank
-  """
+  # Accepts any +ve_number/letter as a symbol. 0, ".", "_" and anything else are considered a blank
   def assign_board(board = %Board{size_x: size_x, size_y: size_y}, initial) when is_bitstring(initial) do
     assign_board(board, string_to_lists(initial, size_x, size_y))
   end
@@ -173,7 +169,7 @@ defmodule Sudoku.Board do
     input
     |> String.graphemes
     |> Enum.map(&convert_symbol/1)
-    |> Enum.chunk(x)
+    |> Enum.chunk_every(x)
   end
 
   ############################################################################
@@ -222,7 +218,7 @@ defmodule Sudoku.Board do
       |> insert_line_endings(line_end)
     end
     # Insert a row of --|-- to break up row units
-    |> Enum.chunk(board.per_box_y)
+    |> Enum.chunk_every(board.per_box_y)
     |> Enum.intersperse( [[ row_unit_break ]] )
     # |> Enum.concat
   end
@@ -238,7 +234,7 @@ defmodule Sudoku.Board do
   # Insert a | character to break up boxes
   defp breakup_box(row, every_x, char) do
     row
-    |> Enum.chunk(every_x)
+    |> Enum.chunk_every(every_x)
     |> Enum.intersperse(char)
     # |> List.flatten
   end
@@ -254,13 +250,13 @@ defmodule Sudoku.Board do
   def square_to_lists(%Square{solution: solution}, per_unit) when not is_nil(solution) do
     List.duplicate(" ", per_unit - 1)
     |> List.insert_at( div(per_unit, 2), "#{solution}")
-    |> Enum.chunk( div(per_unit, @rows_per_cell) )
+    |> Enum.chunk_every( div(per_unit, @rows_per_cell) )
   end
 
   def square_to_lists(%Square{candidates: candidates}, per_unit) do
     1..per_unit
     |> Enum.map( fn(c) -> if(MapSet.member?(candidates, c), do: "#{c}", else: " ") end )
-    |> Enum.chunk( div(per_unit, @rows_per_cell) )
+    |> Enum.chunk_every( div(per_unit, @rows_per_cell) )
   end
 
 end

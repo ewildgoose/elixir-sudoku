@@ -2,7 +2,6 @@ defmodule SudokuMassSolvingTest do
   use ExUnit.Case
   doctest Sudoku.Board
 
-  alias Sudoku.Board
   alias Sudoku.Strategy
 
 
@@ -32,7 +31,7 @@ defmodule SudokuMassSolvingTest do
     chunk_size = div(length(puzzles), :erlang.system_info(:schedulers_online)) + 1
 
     puzzles
-    |> Enum.chunk(chunk_size, chunk_size, [])
+    |> Enum.chunk_every(chunk_size, chunk_size, [])
     |> Enum.map(&Task.async(fn -> solve_a_bunch_of_puzzles(&1) end))
     |> Enum.map(&Task.await(&1, 2_000_000))
     |> Enum.reduce({0, 0}, fn({solved, failed}, {acc_solved, acc_failed}) ->
