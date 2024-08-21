@@ -3,7 +3,7 @@ defmodule Sudoku.Mixfile do
 
   def project do
     [app: :sudoku,
-     version: "1.0.1",
+     version: "1.1.0",
      elixir: "~> 1.2",
      description: "Sudoku solver in Elixir, which prefers to use heuristics over guessing",
      package: package(),
