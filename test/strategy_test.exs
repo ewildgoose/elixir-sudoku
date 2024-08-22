@@ -114,13 +114,12 @@ defmodule SudokuStrategyTest do
   end
 
   test "locked candidates" do
-    step =
+    {:locked_candidates, candidates} =
       @locked_candidates_1
       |> Board.new()
       |> Strategy.find_locked_candidates()
 
-    assert step ==
-             {:locked_candidates,
+    assert candidates ==
               [
                 box: [
                   %Sudoku.Square{box_x: 0, box_y: 0, candidates: MapSet.new([3]), solution: nil, x: 2, y: 2},
@@ -134,13 +133,13 @@ defmodule SudokuStrategyTest do
                   %Sudoku.Square{box_x: 0, box_y: 1, candidates: MapSet.new([9]), solution: nil, x: 1, y: 4},
                   %Sudoku.Square{box_x: 0, box_y: 1, candidates: MapSet.new([9]), solution: nil, x: 2, y: 4}
                 ]
-              ]}
+              ]
   end
 
   test "Combinations of squares" do
-    assert [[:a, :b], [:a, :c], [:b, :c], [:a, :b, :c]] == Strategy.generate_all_combinations([:a, :b, :c])
+    assert [[:a, :b], [:a, :b, :c], [:a, :c], [:b, :c]] == Strategy.generate_all_combinations([:a, :b, :c]) |> sort_lol
 
-    assert [[:a, :b]] == Strategy.generate_all_combinations([:a, :b])
+    assert [[:a, :b]] == Strategy.generate_all_combinations([:a, :b]) |> sort_lol()
 
     assert [] == Strategy.generate_all_combinations([:a])
   end
@@ -157,5 +156,9 @@ defmodule SudokuStrategyTest do
 
     # Assert the original squares aren't in the results
     refute Enum.any?(rest_of_units, &((&1.x == 0 && &1.y == 0) || (&1.x == 3 && &1.y == 8)))
+  end
+
+  def sort_lol(list) when is_list(list) do
+    list |> Enum.map(&Enum.sort(&1)) |> Enum.sort
   end
 end

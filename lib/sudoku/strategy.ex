@@ -610,7 +610,13 @@ defmodule Sudoku.Strategy do
   def generate_all_combinations(list) when length(list) <= 1, do: []
 
   def generate_all_combinations(list) do
-    Enum.flat_map( 2..length(list), &(combination(&1, list)) )
+    for combination <-
+          Enum.reduce(:lists.reverse(list), [[]], fn elem, acc ->
+            acc ++ Enum.map(acc, fn combination -> [elem | combination] end)
+          end),
+        length(combination) > 1 do
+      combination
+    end
   end
 
   # Find all the other squares in a given unit (row/col/box),
