@@ -148,7 +148,7 @@ defmodule Sudoku.Strategy do
 
     hidden_singles =
       1..board.per_unit
-      |> Enum.map(&find_hidden_singles(unsolved, &1))
+      |> Enum.map(&find_hidden_singles_for_candidate(unsolved, &1))
       |> Enum.concat()
       |> no_progress_as_sym
 
@@ -156,16 +156,16 @@ defmodule Sudoku.Strategy do
   end
 
   # Search squares for hidden singles using the given candidate symbol
-  def find_hidden_singles(squares, candidate) do
+  def find_hidden_singles_for_candidate(squares, candidate) do
     # Find squares containing our candidate
     matches =
       squares
       |> filter_squares(&candidate_is_possible?(&1, candidate))
 
     # Search for solo candidate symbol in any of col/row/box
-    find_hidden_singles(matches, candidate, &group_by_x/1, :col) ++
-      find_hidden_singles(matches, candidate, &group_by_y/1, :row) ++
-      find_hidden_singles(matches, candidate, &group_by_box/1, :box)
+    find_hidden_singles_in_group(matches, candidate, &group_by_x/1, :col) ++
+      find_hidden_singles_in_group(matches, candidate, &group_by_y/1, :row) ++
+      find_hidden_singles_in_group(matches, candidate, &group_by_box/1, :box)
   end
 
   # Search within a specific unit type (row/col/box) for given candidate symbol
@@ -174,7 +174,7 @@ defmodule Sudoku.Strategy do
   # Groups them into the specific unit via the group_fn
   # Returns any solo square within a single unit
   # (ie exists only one valid position for this symbol within that unit)
-  def find_hidden_singles(squares, candidate, group_fn, label) do
+  def find_hidden_singles_in_group(squares, candidate, group_fn, label) do
     squares
     |> Enum.group_by(group_fn)
     |> Map.values()
@@ -235,7 +235,7 @@ defmodule Sudoku.Strategy do
 
     locked_candidates =
       1..board.per_unit
-      |> Enum.flat_map(&find_locked_candidates(unsolved, &1))
+      |> Enum.flat_map(&find_locked_candidates_for_candidate(unsolved, &1))
       |> simplify_inferences(:locked_candidates, board)
       |> no_progress_as_sym
 
@@ -243,7 +243,7 @@ defmodule Sudoku.Strategy do
   end
 
   # Search squares for locked candidates using the given candidate symbol
-  def find_locked_candidates(squares, candidate) do
+  def find_locked_candidates_for_candidate(squares, candidate) do
     # Find squares containing our candidate (which haven't been solved)
     matches =
       squares
@@ -394,7 +394,7 @@ defmodule Sudoku.Strategy do
 
     grid_candidates =
       1..board.per_unit
-      |> Enum.flat_map(&find_grid_candidates(unsolved, &1))
+      |> Enum.flat_map(&find_grid_candidates_for_candidate(unsolved, &1))
       |> simplify_inferences(:grid_analysis, board)
       |> no_progress_as_sym
 
@@ -402,7 +402,7 @@ defmodule Sudoku.Strategy do
   end
 
   # Search squares using grid analysis for the given candidate symbol
-  def find_grid_candidates(squares, candidate) do
+  def find_grid_candidates_for_candidate(squares, candidate) do
     # Find squares containing our candidate (which haven't been solved)
     matches =
       squares
