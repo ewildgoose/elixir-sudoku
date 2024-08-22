@@ -1,6 +1,5 @@
 defmodule Sudoku do
-
-  alias Sudoku.Strategy
+  alias Sudoku.Solver
 
   @doc """
   Entry point to solve a sudoku board
@@ -14,6 +13,6 @@ defmodule Sudoku do
   get more solutions (or :invalid if no more solutions to be found)
   """
   def solve(initial) do
-    Strategy.solve(initial)
+    Solver.solve(initial)
   end
 end

@@ -39,7 +39,8 @@ expected to take some extra time anyway)
 
 On my Mid 2014, 2.5Ghz Macbook Pro, it takes under 600 seconds to solve the
 49151 puzzles from minimum_sudoku_17.txt, which is a rate of around 80
-per/second
+per/second. On a 2023 Macbook Pro, it takes around 17 seconds to solve the
+same 49151 puzzles from minimum_sudoku_17.txt
 
 Overall, solving performance is relatively low compared with an optimised
 dancing links in a low level language. In fact Peter Norvig's python based
@@ -90,7 +91,7 @@ as the unknown, and any other character is a symbol to assign to that location
     iex> {:solved, steps, board} = Sudoku.solve("4...1.......3.9.4..7...5..9....6..21..4.7.6..19..5....9..4...7..3.6.8.......3...6"); Sudoku.Board.to_string(board, :flat)
     "459716382612389745873245169387964521524173698196852437965421873731698254248537916"
 
-The Sudoku.Strategy module contains solve/1, find_next_step/1, step_board/1,
+The Sudoku.Solver module contains solve/1, find_next_step/1, step_board/1,
 apply_inference/2. These functions can be used to analyse a board, find an
 inference to advance the board and apply that inference to the board.
 

@@ -2,7 +2,7 @@ defmodule SudokuMassSolvingTest do
   use ExUnit.Case
   doctest Sudoku.Board
 
-  alias Sudoku.Strategy
+  alias Sudoku.Solver
 
 
   # WARNING
@@ -41,7 +41,7 @@ defmodule SudokuMassSolvingTest do
   def solve_a_bunch_of_puzzles(puzzles) do
     puzzles
     |> Enum.reduce({0,0}, fn(board_str, {win, loss}) ->
-                              case Strategy.solve(board_str) do
+                              case Solver.solve(board_str) do
                                 {:solved, _, _} -> {win+1, loss}
                                 {_, _,  _}      -> {win, loss+1}
                               end
